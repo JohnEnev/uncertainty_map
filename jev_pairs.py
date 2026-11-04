@@ -27,23 +27,12 @@ def norm(s):
     s = re.sub(r"\b(a|an|the)\b", " ", s)
     return " ".join(s.split())
 
-
-def get_answer(resp, key):
-    # The exact response shape is not confirmed; --probe shows it. Fix this once.
-    for get in (lambda: resp[key], lambda: resp.answers[key], lambda: getattr(resp, key)):
-        try:
-            return get()
-        except (KeyError, AttributeError, TypeError):
-            pass
-    raise RuntimeError(f"Unknown response shape, run with --probe: {resp!r}")
-
-
 def jev_same(client, question, a, b):
     resp = client.system_one(
         state={"question": question, "answer_a": a, "answer_b": b},
         questions={"same": Noul(instructions=INSTRUCTIONS)},
     )
-    return float(get_answer(resp, "same").noul)
+    return float(resp.answers["same"].noul)
 
 
 def pair_prob(client, question, a, b):

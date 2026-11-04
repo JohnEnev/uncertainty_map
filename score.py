@@ -21,9 +21,13 @@ from sklearn.metrics import roc_auc_score
 from jev_pairs import norm
 
 
-def correct(pred, aliases):
+def correct(pred, aliases, question=""):
     p = f" {norm(pred)} "
-    return any(a and (norm(pred) == a or f" {a} " in p) for a in aliases)
+    q = f" {norm(question)} "
+    return any(
+        a and (norm(pred) == a or (f" {a} " in p and f" {a} " not in q))
+        for a in aliases
+    )
 
 
 def sim_matrix(n, pairs):
@@ -86,7 +90,7 @@ def main():
             "id": qid,
             "question": r["question"],
             "greedy": r["greedy"],
-            "wrong": int(not correct(r["greedy"], r["aliases"])),
+            "wrong": int(not correct(r["greedy"], r["aliases"], r["question"])),
             "neg_mean_logprob": -(r["mean_logprob"] or 0.0),
             "lexical_entropy": entropy(list(Counter(norm(x) for x in r["samples"]).values())),
             "se_hard_jev": se_hard(S),

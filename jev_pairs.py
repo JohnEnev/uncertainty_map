@@ -22,8 +22,7 @@ INSTRUCTIONS = (
 
 
 def norm(s):
-    s = s.lower()
-    s = "".join(ch for ch in s if ch not in string.punctuation)
+    s = re.sub(r"[^\w\s]", " ", s.lower())
     s = re.sub(r"\b(a|an|the)\b", " ", s)
     return " ".join(s.split())
 

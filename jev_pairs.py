@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from itertools import combinations
 from tqdm import tqdm
 from typesafe_sdk import Noul, TypeSafeClient
+import time
 
 INSTRUCTIONS = (
     "Both answers respond to the question in the state. Do answer_a and answer_b give the "
@@ -27,11 +28,17 @@ def norm(s):
     return " ".join(s.split())
 
 def jev_same(client, question, a, b):
-    resp = client.system_one(
-        state={"question": question, "answer_a": a, "answer_b": b},
-        questions={"same": Noul(instructions=INSTRUCTIONS)},
-    )
-    return float(resp.answers["same"].noul)
+    for attempt in range(5):
+        try:
+            resp = client.system_one(
+                state={"question": question, "answer_a": a, "answer_b": b},
+                questions={"same": Noul(instructions=INSTRUCTIONS)},
+            )
+            return float(resp.answers["same"].noul)
+        except Exception:
+            if attempt == 4:
+                raise
+            time.sleep(2 ** attempt)
 
 
 def pair_prob(client, question, a, b):

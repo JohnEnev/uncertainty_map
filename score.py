@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["numpy", "scikit-learn"]
+# dependencies = ["numpy", "scikit-learn", "typesafe-sdk", "tqdm"]
 # ///
 """Step 3: uncertainty scores and AUROC for predicting a wrong answer.
 

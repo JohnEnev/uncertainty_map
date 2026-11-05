@@ -25,7 +25,7 @@ R, B = 30, 2000
 
 print(f"token log-prob baseline (all samples not needed): {roc_auc_score(y, logp):.3f}\n")
 print("  k   hard   soft   soft-hard  95% CI (questions + subsets)")
-for k in (3, 4, 5, 6, 8):
+for k in (3, 4, 5, 6, 8, 12, 16):
     H = np.zeros((R, len(y)))
     Sf = np.zeros((R, len(y)))
     for d in range(R):

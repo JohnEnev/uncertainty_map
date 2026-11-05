@@ -87,6 +87,8 @@ def main():
     p.add_argument("--n", type=int, default=10, help="samples per question")
     p.add_argument("--workers", type=int, default=16)
     p.add_argument("--out", default="data/samples.jsonl")
+    p.add_argument("--items-from", default=None,
+        help="reuse the questions (id, question, aliases) of an existing samples file")
     p.add_argument(
         "--chat-kwargs", default='{"enable_thinking": false}',
         help="JSON passed to the chat template; use '{}' for models without a thinking switch",
@@ -99,7 +101,15 @@ def main():
         seen = {json.loads(l)["id"] for l in open(args.out)}
 
     todo = []
-    for x in load_items(args.dataset, args.questions):
+    if args.items_from:
+        items = []
+        for l in open(args.items_from):
+            r = json.loads(l)
+            items.append({"id": r["id"], "question": r["question"], "aliases": r["aliases"]})
+        items = items[: args.questions]
+    else:
+        items = load_items(args.dataset, args.questions)
+    for x in items:
         if x["id"] not in seen:  # also drops duplicate ids inside the dataset
             seen.add(x["id"])
             todo.append(x)

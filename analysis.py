@@ -3,14 +3,20 @@
 # dependencies = ["numpy", "scikit-learn", "typesafe-sdk", "tqdm"]
 # ///
 """Extra analyses on top of score.py output."""
-import json
+import argparse, json
 import numpy as np
 from sklearn.metrics import roc_auc_score
 from score import se_hard, se_soft, sim_matrix
 
-scores = [json.loads(l) for l in open("data/scores.jsonl")]
-samples = {r["id"]: r for r in map(json.loads, open("data/samples.jsonl"))}
-pairs = {r["id"]: r["pairs"] for r in map(json.loads, open("data/pairs.jsonl"))}
+p = argparse.ArgumentParser()
+p.add_argument("--samples", default="data/samples.jsonl")
+p.add_argument("--pairs", default="data/pairs.jsonl")
+p.add_argument("--scores", default="data/scores.jsonl")
+args = p.parse_args()
+
+scores = [json.loads(l) for l in open(args.scores)]
+samples = {r["id"]: r for r in map(json.loads, open(args.samples))}
+pairs = {r["id"]: r["pairs"] for r in map(json.loads, open(args.pairs))}
 y = np.array([r["wrong"] for r in scores])
 keys = ["neg_mean_logprob", "lexical_entropy", "se_hard_jev", "se_soft_jev"]
 X = {k: np.array([r[k] for r in scores]) for k in keys}

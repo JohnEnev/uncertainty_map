@@ -3,14 +3,20 @@
 # dependencies = ["numpy", "scikit-learn", "typesafe-sdk", "tqdm"]
 # ///
 """Does soft beat hard when only k samples are used? Random subsets, paired bootstrap."""
-import json
+import argparse, json
 import numpy as np
 from sklearn.metrics import roc_auc_score
 from score import se_hard, se_soft, sim_matrix
 
-scores = [json.loads(l) for l in open("data/scores.jsonl")]
-samples = {r["id"]: r for r in map(json.loads, open("data/samples.jsonl"))}
-pairs = {r["id"]: r["pairs"] for r in map(json.loads, open("data/pairs.jsonl"))}
+p = argparse.ArgumentParser()
+p.add_argument("--samples", default="data/samples.jsonl")
+p.add_argument("--pairs", default="data/pairs.jsonl")
+p.add_argument("--scores", default="data/scores.jsonl")
+args = p.parse_args()
+
+scores = [json.loads(l) for l in open(args.scores)]
+samples = {r["id"]: r for r in map(json.loads, open(args.samples))}
+pairs = {r["id"]: r["pairs"] for r in map(json.loads, open(args.pairs))}
 y = np.array([r["wrong"] for r in scores])
 mats = [sim_matrix(len(samples[r["id"]]["samples"]), pairs[r["id"]]) for r in scores]
 logp = np.array([r["neg_mean_logprob"] for r in scores])

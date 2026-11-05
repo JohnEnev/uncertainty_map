@@ -39,7 +39,7 @@ for k, v in diffs.items():
 # 2. AUROC when using only the first k samples (no new Jev calls needed)
 print("\nAUROC using only the first k samples")
 print("   k   hard   soft")
-for k in (3, 4, 6, 8, 10):
+for k in (3, 4, 6, 8, 10, 12, 16):
     h, s = [], []
     for r in scores:
         n = len(samples[r["id"]]["samples"])

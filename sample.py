@@ -41,6 +41,18 @@ def load_items(name, n):
         ]
         random.Random(0).shuffle(items)
         return items[:n]
+    if name == "popqa":
+        ds = load_dataset("akariasai/PopQA", split="test")
+        items = []
+        for i, x in enumerate(ds):
+            answers = json.loads(x["possible_answers"])
+            items.append({
+                "id": f"popqa_{x.get('id', i)}",
+                "question": x["question"],
+                "aliases": sorted({norm(a) for a in answers} - {""}),
+            })
+        random.Random(0).shuffle(items)
+        return items[:n]
     raise ValueError(name)
 
 
@@ -80,7 +92,7 @@ def main():
     from openai import OpenAI
 
     p = argparse.ArgumentParser()
-    p.add_argument("--dataset", default="triviaqa", choices=["triviaqa", "nq_open"])
+    p.add_argument("--dataset", default="triviaqa", choices=["triviaqa", "nq_open", "popqa"])
     p.add_argument("--model", default="Qwen/Qwen3-4B")
     p.add_argument("--base-url", default=os.environ.get("OPENAI_BASE_URL", "http://localhost:8000/v1"))
     p.add_argument("--questions", type=int, default=200)

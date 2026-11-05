@@ -1,0 +1,10 @@
+Wed Nov  4 17:53:02 UTC 2026
+dataset: TriviaQA rc.nocontext validation, seed 0
+model: Qwen/Qwen3-4B
+jev model: jev-1.14.0
+-bash: vllm: command not found
+    992 data/pairs.jsonl
+    992 data/samples.jsonl
+    978 data/scores.jsonl
+   2962 total
+84a43d2a7ecffe0feb2f969bccbd507727f86c3e

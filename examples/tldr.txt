@@ -1,0 +1,25 @@
+======================================================================
+In internet/texting parlance, what does tl;dr mean?
+greedy: "Too long; I'm bored."
+  0: "Too long; didn't read."
+  1: TL;DR stands for "Too Long; Did Not Read," indicating that the following text is a summary of a longer explanation.
+  2: "Too long; didn't read."
+  3: "Too long; didn't read."
+  4: TL;DR stands for "Too Long; Did Not Read," indicating that the following text is a summary of a longer passage.
+  5: "Too long; didn't read."
+  6: "Too long; I'm done."
+  7: TL;DR stands for "Too Long; Didn't Read," indicating a summary of longer text.
+  8: TL;DR stands for "Too Long; Did Not Read," indicating that the following text is a summary of a longer explanation.
+  9: TL;DR stands for "Too Long; Did Not Read," indicating that the following text is a summary of a longer passage.
+pairs: 45 | >=0.95: 30 | <=0.05: 4 | in between: 11
+        0    1    2    3    4    5    6    7    8    9
+  0:    - 0.97 1.00 1.00 0.97 1.00 0.07 0.98 0.96 0.97
+  1: 0.97    - 0.91 0.95 0.96 0.94 0.05 0.89 1.00 0.95
+  2: 1.00 0.91    - 1.00 0.96 1.00 0.07 0.98 0.96 0.97
+  3: 1.00 0.95 1.00    - 0.96 1.00 0.08 0.98 0.97 0.96
+  4: 0.97 0.96 0.96 0.96    - 0.94 0.07 0.94 0.93 1.00
+  5: 1.00 0.94 1.00 1.00 0.94    - 0.08 0.98 0.95 0.95
+  6: 0.07 0.05 0.07 0.08 0.07 0.08    - 0.05 0.05 0.05
+  7: 0.98 0.89 0.98 0.98 0.94 0.98 0.05    - 0.95 0.96
+  8: 0.96 1.00 0.96 0.97 0.93 0.95 0.05 0.95    - 0.96
+  9: 0.97 0.95 0.97 0.96 1.00 0.95 0.05 0.96 0.96    -

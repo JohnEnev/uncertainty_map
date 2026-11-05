@@ -1,0 +1,25 @@
+======================================================================
+What commonly used English Latin expression means literally 'so' or 'thus' or 'in this manner', and generally refers to a quoted error?
+greedy: "Quo vadis" is a Latin expression meaning "where are you going?" It is not the correct answer. The correct answer is "sic."
+  0: "Quo pro quo."
+  1: "Quo vadis" is a Latin expression meaning "where are you going?" and is not related to the question. The correct answer is "quid
+  2: Quod erat demonstrandum.
+  3: "Quo vadis" is a Latin expression that literally means "Where are you going?" It is not the correct answer. The correct answer is "sic
+  4: "Quo vadis" means "so" or "thus" and refers to a quoted error.
+  5: Quo warranto.
+  6: Errare humilis.
+  7: Ergo.
+  8: Quod erat demonstrandum.
+  9: Quod erat demonstrandum.
+pairs: 45 | >=0.95: 3 | <=0.05: 34 | in between: 8
+        0    1    2    3    4    5    6    7    8    9
+  0:    - 0.04 0.05 0.02 0.05 0.09 0.03 0.09 0.05 0.04
+  1: 0.04    - 0.04 0.54 0.11 0.05 0.04 0.05 0.04 0.04
+  2: 0.05 0.04    - 0.02 0.03 0.06 0.04 0.09 1.00 1.00
+  3: 0.02 0.54 0.02    - 0.04 0.02 0.03 0.03 0.02 0.03
+  4: 0.05 0.11 0.03 0.04    - 0.03 0.03 0.05 0.04 0.03
+  5: 0.09 0.05 0.06 0.02 0.03    - 0.03 0.08 0.05 0.05
+  6: 0.03 0.04 0.04 0.03 0.03 0.03    - 0.07 0.05 0.04
+  7: 0.09 0.05 0.09 0.03 0.05 0.08 0.07    - 0.04 0.05
+  8: 0.05 0.04 1.00 0.02 0.04 0.05 0.05 0.04    - 1.00
+  9: 0.04 0.04 1.00 0.03 0.03 0.05 0.04 0.05 1.00    -

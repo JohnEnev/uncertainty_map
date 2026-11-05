@@ -1,0 +1,7 @@
+978 questions, 563 wrong (58%)
+
+score               AUROC   95% CI
+neg_mean_logprob    0.782   [0.753, 0.809]
+lexical_entropy     0.792   [0.764, 0.819]
+se_hard_jev         0.798   [0.771, 0.823]
+se_soft_jev         0.807   [0.778, 0.832]

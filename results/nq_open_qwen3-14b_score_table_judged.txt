@@ -1,0 +1,32 @@
+judged 1000 questions (0 without a usable verdict): {'correct': 370, 'incorrect': 568, 'ambiguous': 62}
+matcher vs judge (non-ambiguous): agree 823/938 (88%); matcher said wrong but judge correct: 104; matcher said right but judge incorrect: 11
+
+MAIN (ambiguous dropped): 938 questions, 568 wrong (61%)
+
+score               AUROC   95% CI
+neg_mean_logprob    0.747   [0.715, 0.778]
+lexical_entropy     0.752   [0.722, 0.783]
+se_hard_nli         0.761   [0.732, 0.789]
+se_soft_nli         0.766   [0.737, 0.795]
+se_hard_jev         0.762   [0.734, 0.792]
+se_soft_jev         0.778   [0.750, 0.806]
+
+Paired AUROC differences (first minus second), 95% bootstrap CI
+  se_soft_jev - se_hard_jev       +0.015  [+0.007, +0.025] *
+  se_soft_nli - se_hard_nli       +0.005  [-0.001, +0.011]
+  se_soft_jev - se_soft_nli       +0.012  [+0.002, +0.022] *
+  se_soft_jev - se_hard_nli       +0.017  [+0.006, +0.029] *
+  se_soft_jev - neg_mean_logprob  +0.032  [+0.009, +0.055] *
+  se_soft_jev - lexical_entropy   +0.026  [+0.011, +0.040] *
+  se_soft_nli - neg_mean_logprob  +0.019  [-0.004, +0.043]
+
+All samples agree: 385 questions, 140 of them wrong; share of all wrong answers that look confident: 25%
+
+SENSITIVITY: AUROC with ambiguous questions counted as right / as wrong
+score                drop  right  wrong
+neg_mean_logprob    0.747  0.736  0.731
+lexical_entropy     0.752  0.745  0.733
+se_hard_nli         0.761  0.752  0.741
+se_soft_nli         0.766  0.758  0.745
+se_hard_jev         0.762  0.755  0.742
+se_soft_jev         0.778  0.770  0.756

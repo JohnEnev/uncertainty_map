@@ -1,0 +1,16 @@
+Soft Jev minus other score, AUROC difference (paired bootstrap, 95% CI)
+  vs neg_mean_logprob  +0.050  [+0.022, +0.078]
+  vs lexical_entropy   +0.032  [+0.011, +0.056]
+  vs se_hard_jev       +0.010  [+0.001, +0.019]
+
+AUROC using only the first k samples
+   k   hard   soft
+   3  0.695  0.715
+   4  0.705  0.718
+   6  0.718  0.728
+   8  0.727  0.735
+  10  0.730  0.740
+
+Questions where all samples agree (hard entropy 0): 264
+  of those, wrong: 162 (61%)
+  share of all wrong answers that look confident: 20%

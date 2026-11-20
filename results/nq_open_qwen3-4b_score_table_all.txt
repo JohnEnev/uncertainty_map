@@ -1,0 +1,15 @@
+1000 questions, 807 wrong (81%)
+
+score               AUROC   95% CI
+neg_mean_logprob    0.689   [0.651, 0.728]
+lexical_entropy     0.708   [0.667, 0.748]
+se_hard_nli         0.728   [0.691, 0.766]
+se_soft_nli         0.734   [0.698, 0.773]
+se_hard_jev         0.730   [0.695, 0.765]
+se_soft_jev         0.740   [0.702, 0.778]
+
+Paired AUROC differences (first minus second), 95% bootstrap CI
+  se_hard_jev - se_hard_nli  +0.002  [-0.012, +0.017]
+  se_soft_nli - se_hard_nli  +0.006  [+0.000, +0.012]
+  se_soft_jev - se_soft_nli  +0.006  [-0.006, +0.018]
+  se_soft_jev - se_hard_nli  +0.012  [-0.002, +0.027]

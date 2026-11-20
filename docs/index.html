@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uncertainty Map</title>
+<meta name="description" content="Ask a model the same question ten times, group the answers by meaning with Jev, and see whether the spread predicts mistakes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+:root {
+  --bg: #f6f5f1; --surface: #ffffff; --ink: #1c1e21; --muted: #5d6268; --faint: #9a9fa5;
+  --line: #e2e0da; --line-strong: #8d9298; --accent: #0e6b66; --accent-soft: #dcefed;
+  --good: #2c7a4b; --good-soft: #e1f1e7; --bad: #b0393a; --bad-soft: #f7e3e1;
+  --c-softjev: #0e6b66; --c-hardjev: #86bdb8; --c-softnli: #b5621c; --c-hardnli: #e4b482;
+  --c-lex: #8a8f96; --c-logp: #34383d;
+  --k0: #0e6b66; --k1: #c25e2a; --k2: #5559c4; --k3: #ab3483; --k4: #4b8a2f; --k5: #a07f1f; --k6: #2c7bb3; --k7: #85563f;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131416; --surface: #1b1d20; --ink: #ebebe8; --muted: #a2a7ad; --faint: #6f747a;
+    --line: #2b2e32; --line-strong: #6b7076; --accent: #4fb2aa; --accent-soft: #17312f;
+    --good: #5cbf85; --good-soft: #16291e; --bad: #e07a76; --bad-soft: #2f1a1a;
+    --c-softjev: #4fb2aa; --c-hardjev: #2c6b66; --c-softnli: #e39a55; --c-hardnli: #8d5a2b;
+    --c-lex: #7d838a; --c-logp: #d4d6d9;
+    --k0: #4fb2aa; --k1: #e3895a; --k2: #8b8ff0; --k3: #dc6ab4; --k4: #7fbf5e; --k5: #d6b34c; --k6: #5ea9de; --k7: #c08a70;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131416; --surface: #1b1d20; --ink: #ebebe8; --muted: #a2a7ad; --faint: #6f747a;
+  --line: #2b2e32; --line-strong: #6b7076; --accent: #4fb2aa; --accent-soft: #17312f;
+  --good: #5cbf85; --good-soft: #16291e; --bad: #e07a76; --bad-soft: #2f1a1a;
+  --c-softjev: #4fb2aa; --c-hardjev: #2c6b66; --c-softnli: #e39a55; --c-hardnli: #8d5a2b;
+  --c-lex: #7d838a; --c-logp: #d4d6d9;
+  --k0: #4fb2aa; --k1: #e3895a; --k2: #8b8ff0; --k3: #dc6ab4; --k4: #7fbf5e; --k5: #d6b34c; --k6: #5ea9de; --k7: #c08a70;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+a { color: var(--accent); }
+header.wrap { padding-top: 56px; padding-bottom: 8px; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.1; margin: 0 0 14px; font-weight: 600; letter-spacing: -0.02em; }
+.lede { font-size: 18px; color: var(--muted); max-width: 680px; margin: 0; }
+h2 { font-size: 24px; margin: 0 0 6px; font-weight: 600; letter-spacing: -0.01em; }
+h3 { font-size: 16px; margin: 0 0 8px; font-weight: 600; }
+.sub { color: var(--muted); margin: 0 0 18px; max-width: 680px; }
+section { padding: 40px 0 8px; }
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 28px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+.kpi b { display: block; font: 600 26px/1.1 var(--sans); margin-bottom: 4px; }
+.kpi span { color: var(--muted); font-size: 14px; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip { font: 500 13px/1 var(--sans); padding: 8px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.explorer { display: grid; grid-template-columns: 290px 1fr; gap: 16px; align-items: start; }
+.picker { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; max-height: 720px; overflow: auto; }
+.picker button { display: block; width: 100%; text-align: left; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); padding: 10px 12px; font: 14px/1.35 var(--sans); cursor: pointer; }
+.picker button:last-child { border-bottom: 0; }
+.picker button[aria-current="true"] { background: var(--accent-soft); }
+.picker small { display: block; color: var(--faint); font: 11px/1.4 var(--mono); margin-top: 3px; }
+.picker .star { color: var(--accent); }
+.mobile-pick { display: none; width: 100%; padding: 10px; font: 15px var(--sans); border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); margin-bottom: 12px; }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; min-width: 0; }
+.badge { display: inline-block; font: 500 11px/1 var(--mono); letter-spacing: .04em; color: var(--muted); border: 1px solid var(--line); padding: 5px 7px; border-radius: 6px; margin-bottom: 10px; }
+.question { font-size: 20px; line-height: 1.35; margin: 0 0 16px; font-weight: 500; }
+.controls { display: flex; flex-wrap: wrap; gap: 16px 22px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+.control { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: none; color: var(--muted); font: 500 13px var(--sans); padding: 6px 11px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+input[type=range] { accent-color: var(--accent); width: 130px; }
+.kval { font: 500 13px var(--mono); color: var(--ink); min-width: 18px; }
+.viz { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 14px; }
+#bubbles { width: 100%; height: auto; display: block; background: var(--bg); border-radius: 8px; }
+.samples { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+.samples li { display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: start; padding: 5px 6px; border-radius: 6px; }
+.samples li.hl { background: var(--accent-soft); }
+.samples .dot { width: 20px; height: 20px; border-radius: 50%; color: #fff; font: 600 11px/20px var(--mono); text-align: center; }
+.gauge { margin-top: 16px; }
+.gauge-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
+.track { position: relative; height: 12px; border-radius: 999px; background: linear-gradient(90deg, var(--good-soft), var(--bad-soft)); border: 1px solid var(--line); }
+.marker { position: absolute; top: -5px; width: 4px; height: 20px; border-radius: 2px; background: var(--ink); transform: translateX(-2px); transition: left .35s ease; }
+.readout { margin-top: 10px; font-size: 15px; }
+.readout b { font-weight: 600; }
+.readout .num { font-family: var(--mono); color: var(--muted); font-size: 13px; }
+.reveal-btn { margin-top: 16px; font: 500 14px var(--sans); padding: 9px 14px; border-radius: 8px; border: 1px solid var(--ink); background: var(--ink); color: var(--bg); cursor: pointer; }
+.answer { margin-top: 16px; padding: 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); display: none; }
+.answer.open { display: block; }
+.verdict { display: inline-block; font: 600 12px/1 var(--sans); padding: 5px 8px; border-radius: 6px; margin-left: 6px; vertical-align: 2px; }
+.verdict.correct { background: var(--good-soft); color: var(--good); }
+.verdict.incorrect { background: var(--bad-soft); color: var(--bad); }
+.answer p { margin: 0 0 8px; }
+.answer .aliases { color: var(--muted); font-size: 14px; }
+.scoretable { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+.scoretable td { padding: 4px 0; border-top: 1px solid var(--line); }
+.scoretable td:last-child { text-align: right; font-family: var(--mono); }
+
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.note { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+.axis text { fill: var(--muted); font: 11px var(--mono); }
+.axis line, .axis path { stroke: var(--line); }
+.gridline { stroke: var(--line); }
+.rowlabel { fill: var(--ink); font: 13px var(--sans); }
+.rowsub { fill: var(--faint); font: 11px var(--mono); }
+table.paired { width: 100%; border-collapse: collapse; font-size: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+table.paired th, table.paired td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+table.paired th { font: 500 12px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+table.paired td.n { font-family: var(--mono); }
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.method div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.method p { margin: 0; color: var(--muted); font-size: 15px; }
+.formula { font-family: var(--mono); font-size: 13px; background: var(--bg); padding: 8px 10px; border-radius: 6px; margin-top: 10px; color: var(--ink); overflow-x: auto; }
+footer { padding: 40px 16px 56px; color: var(--faint); font-size: 13px; text-align: center; }
+#tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--bg); font: 12px/1.4 var(--sans); padding: 7px 9px; border-radius: 6px; opacity: 0; transition: opacity .1s; max-width: 260px; z-index: 10; }
+.loading { color: var(--muted); padding: 40px 0; }
+
+@media (max-width: 860px) {
+  .explorer { grid-template-columns: 1fr; }
+  .picker { display: none; }
+  .mobile-pick { display: block; }
+  .viz { grid-template-columns: 1fr; }
+  .two { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <p class="eyebrow">LLM uncertainty · semantic entropy · Jev</p>
+  <h1>Is the model guessing?</h1>
+  <p class="lede">I ask a model the same question ten times. If the answers agree, it probably knows. If they scatter, it is probably guessing. The hard part is deciding which answers mean the same thing. Here Jev (or an NLI model) judges every pair, and the score keeps its probabilities instead of forcing a yes or no.</p>
+  <div class="kpis" id="kpis"></div>
+</header>
+
+<main>
+  <section class="wrap" id="explore">
+    <h2>Explore an example</h2>
+    <p class="sub">Each dot is one of the model's answers. Answers that mean the same thing pull together and share a colour; grey dots are answers nothing else agrees with. Look at the spread, guess whether the model got it right, then check.</p>
+    <div class="filters" id="filters"></div>
+    <select class="mobile-pick" id="mobilePick" aria-label="Choose an example"></select>
+    <div class="explorer">
+      <nav class="picker" id="picker" aria-label="Examples"></nav>
+      <div class="stage">
+        <span class="badge" id="cellBadge"></span>
+        <p class="question" id="question"></p>
+        <div class="controls">
+          <div class="control">Judge
+            <div class="seg" id="judgeSeg"><button data-v="jev">Jev</button><button data-v="nli">NLI</button></div>
+          </div>
+          <div class="control">Score
+            <div class="seg" id="modeSeg"><button data-v="soft">Soft</button><button data-v="hard">Hard</button></div>
+          </div>
+          <label class="control">Samples
+            <input type="range" id="kRange" min="3" max="10" step="1" value="10">
+            <span class="kval" id="kVal">10</span>
+          </label>
+        </div>
+        <div class="viz">
+          <svg id="bubbles" viewBox="0 0 520 360" role="img" aria-label="Answers grouped by meaning"></svg>
+          <ol class="samples" id="samples"></ol>
+        </div>
+        <div class="gauge">
+          <div class="gauge-row"><span>confident</span><span>guessing</span></div>
+          <div class="track"><div class="marker" id="marker"></div></div>
+          <div class="readout" id="readout"></div>
+        </div>
+        <button class="reveal-btn" id="revealBtn">Show the model's answer</button>
+        <div class="answer" id="answer"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="results">
+    <h2>Does the score predict mistakes?</h2>
+    <p class="sub">AUROC: the chance that a randomly picked wrong answer gets a higher uncertainty score than a randomly picked right one. 0.5 is a coin flip, 1.0 is perfect. Lines show 95% confidence intervals.</p>
+    <div class="chart">
+      <div class="legend" id="legend"></div>
+      <div id="aurocChart"></div>
+    </div>
+    <div class="two">
+      <div class="chart">
+        <h3>More samples stop helping after about 8</h3>
+        <div id="kChart"></div>
+        <p class="note">Average AUROC over all settings, using the first k answers of each question.</p>
+      </div>
+      <div class="chart">
+        <h3>Mistakes no sampling method can see</h3>
+        <div id="confChart"></div>
+        <p class="note">Share of wrong answers where all ten samples agree. Larger models hide more of their errors.</p>
+      </div>
+    </div>
+    <div style="margin-top:16px">
+      <h3>Head to head</h3>
+      <table class="paired" id="paired"></table>
+      <p class="note">Paired bootstrap over questions. A setting counts when the 95% interval of the difference excludes zero.</p>
+    </div>
+  </section>
+
+  <section class="wrap" id="method">
+    <h2>How it works</h2>
+    <div class="method">
+      <div><h3>Sample</h3><p>For each question I take one greedy answer, which is the one that gets graded, and ten more answers at temperature 1.</p></div>
+      <div><h3>Compare</h3><p>For every pair of the ten answers, Jev (or a DeBERTa NLI model) gives the probability that they mean the same thing.</p></div>
+      <div><h3>Score</h3><p>Soft score: how much of the model's probability mass agrees with each answer, averaged. Hard score: cut at 0.5, cluster, take the entropy of cluster sizes.</p>
+        <div class="formula">m<sub>i</sub> = mean<sub>j</sub> P(i,j) &nbsp;·&nbsp; H = −mean<sub>i</sub> log m<sub>i</sub></div></div>
+      <div><h3>Grade</h3><p id="gradeText"></p></div>
+    </div>
+  </section>
+</main>
+<footer id="footer"></footer>
+<div id="tip"></div>
+
+<script>
+// ---- edit these -------------------------------------------------------------
+const LINKS = { repo: "", article: "" };                  // fill in when published
+const JUDGE_NOTE = "Correct or not is decided by an LLM judge (Claude), checked against 98 answers I labelled by hand: 90% agreement, Cohen's kappa 0.81. Questions the judge called ambiguous are left out.";
+// -----------------------------------------------------------------------------
+
+const METHODS = [
+  { key: "se_soft_jev", label: "Soft Jev", c: "--c-softjev", main: true },
+  { key: "se_hard_jev", label: "Hard Jev", c: "--c-hardjev" },
+  { key: "se_soft_nli", label: "Soft NLI", c: "--c-softnli" },
+  { key: "se_hard_nli", label: "Hard NLI (paper)", c: "--c-hardnli" },
+  { key: "lexical_entropy", label: "Lexical entropy", c: "--c-lex" },
+  { key: "neg_mean_logprob", label: "Token log-prob", c: "--c-logp" },
+];
+const MODEL_NAMES = { "qwen3-4b": "Qwen3 4B", "qwen3-14b": "Qwen3 14B", "gemma-3-12b-it": "Gemma 3 12B" };
+const CATS = {
+  confident_right: "Confident, right", confident_wrong: "Confident, wrong",
+  scattered_right: "Unsure, right", scattered_wrong: "Unsure, wrong",
+  partial_overlap: "Partly the same", judges_disagree: "Jev and NLI disagree",
+};
+const PAIRS = [
+  ["se_soft_jev-neg_mean_logprob", "Soft Jev vs token log-prob"],
+  ["se_soft_jev-lexical_entropy", "Soft Jev vs lexical entropy"],
+  ["se_soft_jev-se_soft_nli", "Soft Jev vs soft NLI"],
+  ["se_soft_jev-se_hard_jev", "Soft Jev vs hard Jev"],
+  ["se_soft_nli-se_hard_nli", "Soft NLI vs hard NLI"],
+];
+const css = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const cellName = c => `${c.dataset} · ${MODEL_NAMES[c.model] || c.model}`;
+const tip = document.getElementById("tip");
+function showTip(e, html) { tip.innerHTML = html; tip.style.opacity = 1; tip.style.left = Math.min(e.clientX + 12, innerWidth - 270) + "px"; tip.style.top = (e.clientY + 12) + "px"; }
+function hideTip() { tip.style.opacity = 0; }
+
+const state = { data: null, filter: "all", idx: 0, judge: "jev", mode: "soft", k: 10, revealed: false, pos: {} };
+
+// ---------- scoring (same rules as score.py) ----------
+function matrixFor(ex) {
+  let M;
+  if (state.judge === "jev") M = state.mode === "hard" ? ex.jev.map(r => r.map(v => (v >= 0.5 ? 1 : 0))) : ex.jev;
+  else M = state.mode === "hard" ? ex.nli_hard : ex.nli_soft;
+  return M.slice(0, state.k).map(r => r.slice(0, state.k));
+}
+function clusters(M) {
+  const reps = [], label = [];
+  for (let i = 0; i < M.length; i++) {
+    let c = reps.findIndex(r => M[i][r] >= 0.5);
+    if (c < 0) { reps.push(i); c = reps.length - 1; }
+    label.push(c);
+  }
+  return label;
+}
+function colours(labels) {
+  const size = {};
+  labels.forEach(l => (size[l] = (size[l] || 0) + 1));
+  const groups = Object.keys(size).filter(l => size[l] > 1).sort((a, b) => size[b] - size[a]);
+  return labels.map(l => (size[l] > 1 ? `var(--k${groups.indexOf(String(l)) % 8})` : "var(--faint)"));
+}
+function entropyOf(labels) {
+  const n = labels.length, counts = {};
+  labels.forEach(l => (counts[l] = (counts[l] || 0) + 1));
+  return -Object.values(counts).reduce((s, c) => s + (c / n) * Math.log(c / n), 0);
+}
+function softH(M) {
+  const n = M.length;
+  return -M.reduce((s, row) => s + Math.log(row.reduce((a, b) => a + b, 0) / n), 0) / n;
+}
+
+// ---------- explorer ----------
+function visible() {
+  const g = state.data.gallery;
+  return state.filter === "all" ? g : state.filter === "featured" ? g.filter(x => x.featured) : g.filter(x => x.category === state.filter);
+}
+function renderFilters() {
+  const cats = ["all", ...(state.data.gallery.some(x => x.featured) ? ["featured"] : []), ...Object.keys(CATS).filter(c => state.data.gallery.some(x => x.category === c))];
+  const label = c => (c === "all" ? "All" : c === "featured" ? "Featured" : CATS[c]);
+  const box = document.getElementById("filters");
+  box.innerHTML = cats.map(c => `<button class="chip" data-c="${c}" aria-pressed="${c === state.filter}">${label(c)}</button>`).join("");
+  box.querySelectorAll("button").forEach(b => (b.onclick = () => { state.filter = b.dataset.c; selectEx(visible()[0]); renderFilters(); }));
+}
+function renderPicker() {
+  const list = visible(), cur = state.data.gallery[state.idx];
+  const nav = document.getElementById("picker");
+  nav.innerHTML = list.map(x => {
+    const cell = state.data.cells.find(c => c.tag === x.tag);
+    return `<button data-i="${state.data.gallery.indexOf(x)}" aria-current="${x === cur}">${x.featured ? '<span class="star">★ </span>' : ""}${escapeHtml(x.question)}<small>${CATS[x.category] || x.category} · ${cell ? cellName(cell) : x.tag}</small></button>`;
+  }).join("");
+  nav.querySelectorAll("button").forEach(b => (b.onclick = () => selectEx(state.data.gallery[+b.dataset.i])));
+  const sel = document.getElementById("mobilePick");
+  sel.innerHTML = list.map(x => `<option value="${state.data.gallery.indexOf(x)}" ${x === cur ? "selected" : ""}>${escapeHtml(x.question.slice(0, 80))}</option>`).join("");
+  sel.onchange = () => selectEx(state.data.gallery[+sel.value]);
+}
+function selectEx(ex) {
+  if (!ex) return;
+  state.idx = state.data.gallery.indexOf(ex);
+  state.revealed = false;
+  state.pos = {};
+  history.replaceState(null, "", "#" + encodeURIComponent(`${ex.tag}:${ex.id}`));
+  renderPicker();
+  renderStage();
+}
+function setSeg(id, key) {
+  document.querySelectorAll(`#${id} button`).forEach(b => {
+    b.setAttribute("aria-pressed", b.dataset.v === state[key]);
+    b.onclick = () => { state[key] = b.dataset.v; setSeg(id, key); renderStage(); };
+  });
+}
+function renderStage() {
+  const ex = state.data.gallery[state.idx];
+  const cell = state.data.cells.find(c => c.tag === ex.tag);
+  document.getElementById("cellBadge").textContent = cell ? cellName(cell) : ex.tag;
+  document.getElementById("question").textContent = ex.question;
+  const M = matrixFor(ex), labels = clusters(M), k = M.length;
+  const H = state.mode === "soft" ? softH(M) : entropyOf(labels);
+  const share = Math.max(0, Math.min(1, H / Math.log(k)));
+  const nClusters = new Set(labels).size;
+  const col = colours(labels);
+  drawBubbles(ex, M, col);
+  const ol = document.getElementById("samples");
+  ol.innerHTML = ex.samples.slice(0, k).map((s, i) =>
+    `<li data-i="${i}"><span class="dot" style="background:${col[i]}">${i + 1}</span><span>${escapeHtml(s)}</span></li>`).join("");
+  ol.querySelectorAll("li").forEach(li => {
+    li.onmouseenter = () => highlight(+li.dataset.i, true);
+    li.onmouseleave = () => highlight(+li.dataset.i, false);
+  });
+  document.getElementById("marker").style.left = (share * 100) + "%";
+  const word = share < 0.15 ? "Confident" : share < 0.5 ? "Unsure" : "Guessing";
+  document.getElementById("readout").innerHTML =
+    `<b>${word}.</b> ${nClusters} distinct ${nClusters === 1 ? "meaning" : "meanings"} among ${k} answers. ` +
+    `<span class="num">${state.mode} ${state.judge === "jev" ? "Jev" : "NLI"} score ${H.toFixed(2)} of max ${Math.log(k).toFixed(2)}</span>`;
+  const btn = document.getElementById("revealBtn"), ans = document.getElementById("answer");
+  btn.textContent = state.revealed ? "Hide the answer" : "Show the model's answer";
+  btn.onclick = () => { state.revealed = !state.revealed; renderStage(); };
+  ans.classList.toggle("open", state.revealed);
+  if (state.revealed) {
+    const rows = METHODS.map(m => `<tr><td>${m.label}</td><td>${ex.scores[m.key].toFixed(3)}</td></tr>`).join("");
+    ans.innerHTML =
+      `<p>Model's answer: <b>${escapeHtml(ex.greedy)}</b><span class="verdict ${ex.verdict}">${ex.verdict === "correct" ? "Correct" : "Wrong"}</span></p>` +
+      `<p class="aliases">Accepted answers: ${ex.aliases.map(escapeHtml).join(" · ")}</p>` +
+      `<table class="scoretable"><tr><td colspan="2" style="color:var(--muted)">All six scores for this question (10 answers; higher = less sure)</td></tr>${rows}</table>`;
+  }
+}
+function highlight(i, on) {
+  document.querySelectorAll(`#samples li[data-i="${i}"]`).forEach(li => li.classList.toggle("hl", on));
+  d3.select("#bubbles").selectAll("g.node").filter(d => d.i === i).select("circle").attr("stroke-width", on ? 3 : 1.5);
+}
+function drawBubbles(ex, M, col) {
+  const W = 520, H = 360, R = 20, k = M.length;
+  const nodes = d3.range(k).map(i => {
+    const p = state.pos[i];
+    return { i, x: p ? p.x : W / 2 + 120 * Math.cos((2 * Math.PI * i) / k), y: p ? p.y : H / 2 + 120 * Math.sin((2 * Math.PI * i) / k) };
+  });
+  const links = [];
+  for (let i = 0; i < k; i++) for (let j = i + 1; j < k; j++) if (M[i][j] > 0.15) links.push({ source: i, target: j, v: M[i][j] });
+  // answers that mean the same thing pull into a tight bunch; everything else is pushed apart
+  const sim = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.i).distance(d => 2 * R + 2 + 260 * (1 - d.v)).strength(d => 0.1 + 0.9 * d.v))
+    .force("charge", d3.forceManyBody().strength(-520).distanceMax(420))
+    .force("collide", d3.forceCollide(R + 4).strength(1))
+    .force("x", d3.forceX(W / 2).strength(0.035))
+    .force("y", d3.forceY(H / 2).strength(0.06))
+    .stop();
+  for (let t = 0; t < 320; t++) sim.tick();
+  nodes.forEach(n => { n.x = Math.max(R + 4, Math.min(W - R - 4, n.x)); n.y = Math.max(R + 4, Math.min(H - R - 4, n.y)); state.pos[n.i] = { x: n.x, y: n.y }; });
+
+  const svg = d3.select("#bubbles");
+  const T = svg.transition().duration(450);
+  const lk = svg.selectAll("line.link").data(links, d => `${d.source.i}-${d.target.i}`);
+  lk.exit().transition(T).attr("opacity", 0).remove();
+  lk.enter().insert("line", "g").attr("class", "link").attr("opacity", 0)
+    .attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y)
+    .merge(lk).style("stroke", "var(--line-strong)").attr("stroke-width", d => 0.5 + 2.5 * d.v)
+    .transition(T).attr("opacity", d => 0.12 + 0.55 * d.v)
+    .attr("x1", d => d.source.x).attr("y1", d => d.source.y).attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+  const nd = svg.selectAll("g.node").data(nodes, d => d.i);
+  nd.exit().transition(T).attr("opacity", 0).remove();
+  const ent = nd.enter().append("g").attr("class", "node").attr("opacity", 0).attr("transform", d => `translate(${d.x},${d.y})`);
+  ent.append("circle").attr("r", R).attr("stroke-width", 1.5).style("stroke", "var(--surface)");
+  ent.append("text").attr("text-anchor", "middle").attr("dy", "0.35em").style("fill", "#fff").style("font", "600 13px var(--mono)").style("pointer-events", "none");
+  const all = ent.merge(nd);
+  all.on("mouseenter", (e, d) => { highlight(d.i, true); showTip(e, escapeHtml(ex.samples[d.i])); })
+     .on("mouseleave", (e, d) => { highlight(d.i, false); hideTip(); });
+  all.select("circle").transition(T).style("fill", d => col[d.i]);
+  all.select("text").text(d => d.i + 1);
+  all.transition(T).attr("opacity", 1).attr("transform", d => `translate(${d.x},${d.y})`);
+  svg.selectAll("g.node").raise();
+}
+
+// ---------- results ----------
+function width(el) { return Math.max(300, el.getBoundingClientRect().width); }
+function renderLegend() {
+  document.getElementById("legend").innerHTML = METHODS.map(m => `<span><i style="background:var(${m.c})"></i>${m.label}</span>`).join("");
+}
+function renderAuroc() {
+  const host = document.getElementById("aurocChart"), cells = state.data.cells;
+  const W = width(host), narrow = W < 560, mL = narrow ? 112 : 170, mR = 16, rowH = 50, mT = 8, mB = 28;
+  const H = mT + mB + rowH * cells.length;
+  const vals = cells.flatMap(c => METHODS.flatMap(m => c.auroc[m.key].slice(1)));
+  const x = d3.scaleLinear().domain([Math.floor(d3.min(vals) * 50) / 50, Math.ceil(d3.max(vals) * 50) / 50]).range([mL, W - mR]);
+  host.innerHTML = "";
+  const svg = d3.select(host).append("svg").attr("viewBox", `0 0 ${W} ${H}`);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - mB})`).call(d3.axisBottom(x).ticks(narrow ? 4 : 7).tickFormat(d3.format(".2f")));
+  svg.append("g").selectAll("line").data(x.ticks(narrow ? 4 : 7)).join("line").attr("class", "gridline")
+    .attr("x1", d => x(d)).attr("x2", d => x(d)).attr("y1", mT).attr("y2", H - mB);
+  cells.forEach((c, ri) => {
+    const y0 = mT + ri * rowH + rowH / 2;
+    if (ri > 0) svg.append("line").attr("class", "gridline").attr("x1", 0).attr("x2", W - mR).attr("y1", y0 - rowH / 2).attr("y2", y0 - rowH / 2);
+    svg.append("text").attr("class", "rowlabel").attr("x", 0).attr("y", y0 - 3).text(c.dataset);
+    svg.append("text").attr("class", "rowsub").attr("x", 0).attr("y", y0 + 12).text(`${MODEL_NAMES[c.model] || c.model} · ${Math.round(c.wrong_rate * 100)}% wrong`);
+    METHODS.forEach((m, mi) => {
+      const [a, lo, hi] = c.auroc[m.key], y = y0 - 15 + mi * 6;
+      svg.append("line").attr("x1", x(lo)).attr("x2", x(hi)).attr("y1", y).attr("y2", y).style("stroke", `var(${m.c})`).attr("stroke-width", m.main ? 2 : 1).attr("opacity", m.main ? 0.9 : 0.55);
+      svg.append("circle").attr("cx", x(a)).attr("cy", y).attr("r", m.main ? 5 : 3.5).style("fill", `var(${m.c})`).style("stroke", "var(--surface)").attr("stroke-width", 1)
+        .on("mouseenter", e => showTip(e, `<b>${m.label}</b> · ${cellName(c)}<br>AUROC ${a.toFixed(3)} [${lo.toFixed(3)}, ${hi.toFixed(3)}]`)).on("mouseleave", hideTip);
+    });
+  });
+}
+function renderK() {
+  const host = document.getElementById("kChart"), cells = state.data.cells, ks = state.data.ks;
+  const W = width(host), H = 230, mL = 40, mR = 86, mT = 10, mB = 28;
+  const series = METHODS.filter(m => m.key.startsWith("se_")).map(m => ({ m, pts: ks.map(k => ({ k, v: d3.mean(cells, c => c.kcurve[k][m.key]) })) }));
+  const lp = d3.mean(cells, c => c.auroc.neg_mean_logprob[0]);
+  const all = series.flatMap(s => s.pts.map(p => p.v)).concat([lp]);
+  const x = d3.scaleLinear().domain(d3.extent(ks)).range([mL, W - mR]);
+  const y = d3.scaleLinear().domain([d3.min(all) - 0.01, d3.max(all) + 0.01]).range([H - mB, mT]);
+  host.innerHTML = "";
+  const svg = d3.select(host).append("svg").attr("viewBox", `0 0 ${W} ${H}`);
+  svg.append("g").attr("class", "axis").attr("transform", `translate(0,${H - mB})`).call(d3.axisBottom(x).tickValues(ks).tickFormat(d => d));
+  svg.append("g").attr("class", "axis").attr("transform", `translate(${mL},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(d3.format(".2f")));
+  svg.append("line").attr("x1", mL).attr("x2", W - mR).attr("y1", y(lp)).attr("y2", y(lp)).style("stroke", "var(--c-logp)").attr("stroke-dasharray", "4 4").attr("opacity", 0.7);
+  svg.append("text").attr("x", W - mR + 6).attr("y", y(lp)).attr("dy", "0.35em").style("fill", "var(--muted)").style("font", "11px var(--sans)").text("log-prob");
+  const line = d3.line().x(p => x(p.k)).y(p => y(p.v));
+  const ends = [];
+  series.forEach(s => {
+    svg.append("path").attr("d", line(s.pts)).attr("fill", "none").style("stroke", `var(${s.m.c})`).attr("stroke-width", s.m.main ? 2.5 : 1.5);
+    svg.selectAll(null).data(s.pts).join("circle").attr("cx", p => x(p.k)).attr("cy", p => y(p.v)).attr("r", 2.5).style("fill", `var(${s.m.c})`)
+      .on("mouseenter", (e, p) => showTip(e, `<b>${s.m.label}</b>, ${p.k} samples<br>mean AUROC ${p.v.toFixed(3)}`)).on("mouseleave", hideTip);
+    ends.push({ y: y(s.pts[s.pts.length - 1].v), s });
+  });
+  ends.sort((a, b) => a.y - b.y);
+  for (let i = 1; i < ends.length; i++) ends[i].y = Math.max(ends[i].y, ends[i - 1].y + 12);
+  ends.forEach(e => svg.append("text").attr("x", W - mR + 6).attr("y", e.y).attr("dy", "0.35em").style("fill", `var(${e.s.m.c})`).style("font", "11px var(--sans)").text(e.s.m.label.replace(" (paper)", "")));
+}
+function renderConf() {
+  const host = document.getElementById("confChart"), cells = state.data.cells.filter(c => c.confident_error_share != null);
+  const W = width(host), mL = 158, mR = 40, rowH = 26, H = rowH * cells.length + 6;
+  const x = d3.scaleLinear().domain([0, Math.max(0.5, d3.max(cells, c => c.confident_error_share))]).range([mL, W - mR]);
+  host.innerHTML = "";
+  const svg = d3.select(host).append("svg").attr("viewBox", `0 0 ${W} ${H}`);
+  cells.forEach((c, i) => {
+    const y = 3 + i * rowH;
+    svg.append("text").attr("x", 0).attr("y", y + rowH / 2).attr("dy", "0.35em").style("fill", "var(--ink)").style("font", "12px var(--sans)")
+      .text(`${c.dataset} · ${MODEL_NAMES[c.model] || c.model}`);
+    svg.append("rect").attr("x", mL).attr("y", y + 5).attr("height", rowH - 10).attr("width", x(c.confident_error_share) - mL).attr("rx", 3)
+      .style("fill", "var(--c-softjev)").attr("opacity", 0.85);
+    svg.append("text").attr("x", x(c.confident_error_share) + 6).attr("y", y + rowH / 2).attr("dy", "0.35em").style("fill", "var(--muted)").style("font", "11px var(--mono)")
+      .text(Math.round(c.confident_error_share * 100) + "%");
+  });
+}
+function renderPaired() {
+  const cells = state.data.cells, n = cells.length;
+  const rows = PAIRS.filter(([k]) => cells.every(c => c.paired[k])).map(([k, label]) => {
+    const d = cells.map(c => c.paired[k]);
+    const better = d.filter(v => v[1] > 0).length, worse = d.filter(v => v[2] < 0).length;
+    return `<tr><td>${label}</td><td class="n">${better} of ${n}${worse ? ` (worse in ${worse})` : ""}</td><td class="n">${d3.format("+.3f")(d3.min(d, v => v[0]))} to ${d3.format("+.3f")(d3.max(d, v => v[0]))}</td></tr>`;
+  }).join("");
+  document.getElementById("paired").innerHTML = `<tr><th>Comparison</th><th>Significantly better</th><th>AUROC difference</th></tr>${rows}`;
+}
+function renderKpis() {
+  const cells = state.data.cells, n = cells.length;
+  const best = cells.filter(c => METHODS.every(m => c.auroc.se_soft_jev[0] >= c.auroc[m.key][0])).length;
+  const sig = k => cells.filter(c => c.paired[k] && c.paired[k][1] > 0).length;
+  const items = [
+    [`${best} of ${n}`, "settings where soft Jev is the best predictor of mistakes"],
+    [`${sig("se_soft_jev-neg_mean_logprob")} of ${n}`, "settings where it significantly beats the model's own token confidence"],
+    [`${sig("se_soft_jev-se_soft_nli")} of ${n}`, "settings where Jev beats an NLI model as the judge of same meaning"],
+  ];
+  document.getElementById("kpis").innerHTML = items.map(([b, s]) => `<div class="kpi"><b>${b}</b><span>${s}</span></div>`).join("");
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch])); }
+
+function renderResults() { renderLegend(); renderAuroc(); renderK(); renderConf(); renderPaired(); }
+
+async function init() {
+  try {
+    state.data = await (await fetch("data.json")).json();
+  } catch (e) {
+    document.querySelector("main").innerHTML = `<p class="wrap loading">Could not load data.json. Open this page through a web server (for example <code>python3 -m http.server</code> in this folder), not as a file.</p>`;
+    return;
+  }
+  document.getElementById("gradeText").textContent = JUDGE_NOTE;
+  const ds = [...new Set(state.data.cells.map(c => c.dataset))].join(", ");
+  const links = [LINKS.repo && `<a href="${LINKS.repo}">Code and data</a>`, LINKS.article && `<a href="${LINKS.article}">Write-up</a>`].filter(Boolean).join(" · ");
+  document.getElementById("footer").innerHTML = `${ds} · ${state.data.cells.length} settings · data exported ${state.data.generated}${links ? " · " + links : ""}`;
+  renderKpis();
+  setSeg("judgeSeg", "judge");
+  setSeg("modeSeg", "mode");
+  const kr = document.getElementById("kRange");
+  kr.oninput = () => { state.k = +kr.value; document.getElementById("kVal").textContent = kr.value; renderStage(); };
+  renderFilters();
+  const want = decodeURIComponent(location.hash.slice(1));
+  const start = state.data.gallery.find(x => `${x.tag}:${x.id}` === want) || state.data.gallery[0];
+  selectEx(start);
+  renderResults();
+  let t;
+  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(renderResults, 150); });
+}
+init();
+</script>
+</body>
+</html>

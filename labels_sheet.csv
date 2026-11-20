@@ -1,0 +1,99 @@
+tag,id,question,greedy,aliases,matcher,my_label
+nq_open_qwen3-4b,nq_1161,name a food you might eat on thanksgiving,Turkey.,large roasted turkey | turkey,right,C
+triviaqa_qwen3-14b,sfq_12415,What is the most common gas in the Earth's atmosphere?,Nitrogen.,n₂ | dinitrogen | s2 2s2 2p3 | nitrogens | mephitic air | noxious air | phlogisticated air | industrial nitrogen,right,C
+nq_open_qwen3-14b,nq_585,when did the last state became a state,1959 (Hawaii).,august 21 1959 | hawaii,right,C
+triviaqa_gemma-3-12b-it,tc_1128,Which film director guested as the FBI Director in The Silence of the Lambs?,Scott.,roger william corman | doorway film | roger corman,wrong,I
+nq_open_qwen3-14b,nq_1274,in florida it is illegal to sell alcohol before 1 pm on any sunday. this is an example of,Blue law.,blue laws,wrong,C
+triviaqa_qwen3-14b,sfq_15036,Who is the only man to win a best actor Oscar playing brothers?,Leonardo DiCaprio,marvin lee | lee marvin,wrong,I
+popqa_qwen3-4b,popqa_5954770,What genre is The Shapes?,The Shapes is a post-punk rock band.,punk | punk music | punk rock,right,c
+triviaqa_qwen3-14b,sfq_14598,In Kipling's 'The Jungle Book' what kind of creature is Hathi?,Elephant,elephant disambiguation | elephant | l elephant | elephant song | elephant film,right,C
+triviaqa_gemma-3-12b-it,odql_1763,Which operatic heroine dies by throwing herself from the Castel Sant’Angelo in Rome?,Violetta.,tsca disambiguation | tosca | toxic substances control act | toxic substances control act of 1976 | tsca,wrong,a
+nq_open_qwen3-14b,nq_1241,what type of writing did ancient egypt use,Hieroglyphs.,egyptian hieroglyphs | hieroglyphs,right,c
+nq_open_qwen3-14b,nq_2907,where did the battle of bonhomme richard take place,Off the coast of France.,near flamborough head,wrong,I
+nq_open_qwen3-4b,nq_1517,who plays grace in the secret life of the american teenager,Emma Roberts.,megan park,wrong,I
+triviaqa_qwen3-14b,sfq_8651,"Who was the woman who was, at one time, the leader of the trade union SOGAT?",Barbara Castle,baroness dean of thornton le fylde | brenda dean | brenda dean baroness dean | brenda dean baroness dean of thornton le fylde,wrong,I
+triviaqa_gemma-3-12b-it,qb_4569,The day after Shrove Tuesday is known as ‘What’….Wednesday’?,Ash.,imposition of ashes | ash wed | ash wednesday | national no smoking day,wrong,c
+popqa_qwen3-14b,popqa_380223,Who was the screenwriter for Great Expectations?,Charles Dickens,anthony havelock allan | boz | c dickens | charles dickens | charles john huffam dickens | david lean | dickens | kay walsh,right,c
+popqa_qwen3-14b,popqa_5652200,Who is the author of Ruth?,The author of Ruth is unknown.,author of mary barton | elizabeth cleghorn gaskell | elizabeth cleghorn stevenson | elizabeth gaskell | mrs gaskell née stevenson,wrong,a
+triviaqa_qwen3-14b,odql_8374,One Summer: America 1927 is a 2013 history book by which author?,David McCullough,william mcguire 22bill 22 bryson obe | william mcguire bryson | bryson bill | william mcguire 22bill 22 bryson | william mcguire bryson obe | lost continent and neither here nor there | bill bryson,wrong,I
+nq_open_qwen3-4b,nq_2605,what areas of africa were involved in colonization,"Africa was colonized by European powers, including France, Britain, Germany, Portugal, and others, in regions such as West Africa, East Africa, North Africa",90 percent of continent,wrong,a
+nq_open_qwen3-4b,nq_3437,what are the band members names of the rolling stones,"Mick Jagger, Keith Richards, Brian Jones, Bill Wyman, and Charlie Watts.",charlie watts | keith richards | mick jagger | ronnie wood,right,c
+triviaqa_qwen3-4b,qw_14981,Omar Sharif played the title character in the 1965 film of what 1957 novel by the Russian writer Boris Pasternak?,"""Doctor Zhivago""",доктор живаго | dr zhivago | yuryatin | varykino | dr yuri zhivago | doctor zhivago | zhivago | dr zhivago novel,right,c
+popqa_qwen3-14b,popqa_809091,What is Kanye West's occupation?,"Musician, rapper, producer.",music producer | record producer | song writer | songwriter,wrong,c
+nq_open_qwen3-14b,nq_3052,what is the name of the weapon the grim reaper carries,Scythe,scythe,right,c
+triviaqa_qwen3-4b,jp_745,"Lucrezia, Cesare, and Rodrigo were part of what papal family?",Borgia.,roccelletta di borgia | borgia family | borgias | house of borja | list of borgias | borgia | house of borgia | list of borgia popes,right,c
+triviaqa_qwen3-14b,bt_496,Which one hit wonders charted with They Shoot Horses Don’t They,"They Shoot Horses, Don't They? was charted by **The Shangri-Las**.",racing cars | they shoot horses don t they 3f song,wrong,A
+triviaqa_qwen3-4b,odql_3764,Who appears on the reverse of the current Bank of England £10 note?,The reverse of the current Bank of England £10 note features a portrait of William Wilberforce.,cr darwin | darwin200 | darwin 200 | charles robert darwin | darwin s theory | charles r darwin | charels darwin | mary darwin,wrong,I
+popqa_qwen3-14b,popqa_5467380,What is the capital of Han dynasty?,Chang'an,chang | changan | jingluo | loyang | luoyang | luoyi | shendu | xijing,right,C
+popqa_qwen3-14b,popqa_2920239,Who was the screenwriter for Sam?,"The question is unclear or incomplete. ""Sam"" could refer to a person, a movie, or a character, but without additional context, the screenwriter cannot",larry buchanan | marcus larry seale jr,wrong,I
+triviaqa_gemma-3-12b-it,qz_2594,Which famous cowboy was created by George W. Trendle?,The Lone Ranger.,hi yo silver away | lone ranger | silver horse | lone ranger film project | lone ranger comics,right,c
+triviaqa_gemma-3-12b-it,sfq_14433,In Pride and Prejudice what was the first name of Mr Darcy?,Fitzwilliam.,fitzwilliam disambiguation | fitzwilliam,right,c
+popqa_qwen3-14b,popqa_5948044,Who is the author of The Pit?,F. Scott Fitzgerald,frank norris | justin sturgis,wrong,I
+triviaqa_qwen3-14b,qw_15291,"In 1938 Orson Welles, who was 22 at the time, wrote, produced, and narrated a radio play adaptation of what work, the US broadcast of which sparked widespread upheaval and panic?",War of the Worlds,war of worlds by h g wells,wrong,c
+nq_open_qwen3-4b,nq_1558,what was the first video game for nintendo,"The first video game for Nintendo was ""Donkey Kong.""",evr race | magnavox odyssey,wrong,I
+triviaqa_qwen3-4b,dpql_1989,Which title characters adventures took place on the Isle of Sodor?,The title character whose adventures took place on the Isle of Sodor is Thomas the Tank Engine.,thomas tank | thomas tankengine | thomas train | thomas tank engine | tomas tank engine,right,c
+popqa_qwen3-4b,popqa_2634411,Who was the screenwriter for Sal?,Answer: John Sayles.,james edward franco | james franco,wrong,I
+popqa_qwen3-4b,popqa_4767525,Who is the author of Gerald's Game?,Ian Rankin.,john swithen | richard bachman | stephen edwin king | stephen king,wrong,I
+nq_open_qwen3-4b,nq_1475,when was the last time america hosted the summer olympics,The last time America hosted the Summer Olympics was in 1996.,1996 | salt lake city,right,c
+popqa_qwen3-14b,popqa_4107856,Who was the producer of Filthy!?,The producer of *Filthy!* was **Damon Albarn**.,john henry creach | papa john creach,wrong,I
+triviaqa_qwen3-14b,qw_7457,"""The song """"Love is All Around"""" by Wet Wet Wet featured on the soundtrack for which 1994 film?""",Four Weddings and a Funeral,four weddings and funeral | four weddings funeral | 4 weddings and funeral | 4 weddings | four weddings and funeral film,right,c
+triviaqa_qwen3-4b,dpql_6289,"Which female politician and aristocrat said ‘I married beneath me, all women do’?",Dame Margaret Thatcher.,nancy astor mini series | nancy langhorne | lady nancy astor | viscountess astor | nancy witcher langhorne astor | nancy astor viscountess astor | nancy witcher astor viscountess astor | astor nancy witcher langhorne viscountess astor,wrong,I
+triviaqa_qwen3-14b,dpql_1197,"Celandine, topaz and gamboge are shades of which colour?",Yellow.,rgb 255 255 0 | yellow colour | royal yellow | dark yellow | 255 255 0 | yellower | yellow color | yelow,right,c
+nq_open_qwen3-4b,nq_590,who won first ancient olympic 200 yard race,The first ancient Olympic 200-yard race was won by Coroebus of Elis.,coroebus of elis,right,c
+nq_open_qwen3-4b,nq_2139,who played in the first fifty shades of grey,The first *Fifty Shades of Grey* movie starred Jamie Dornan as Christian and Taylor Lautner as Anastasia.,dakota johnson | jamie dornan | jennifer ehle | marcia gay harden,right,a
+popqa_qwen3-4b,popqa_6519720,Who was the composer of The Seasons?,The composer of *The Seasons* is Joseph Haydn.,franciscus joseph haydn | franciscus josephus haydn | franz joseph haydn | haydn | joseph haydn,right,c
+triviaqa_qwen3-4b,qw_7447,"""A 1993 film starring Tom Hanks was """"Sleepless in ... """" where?""",Sleepless in Seattle.,seattleites | seatle | jet city | seattle wash | seattle washington usa | seattle us wa | weather in seattle | emerald city washington,right,c
+popqa_qwen3-4b,popqa_3731527,What sport does Christophe Ott play?,Christophe Ott plays football (soccer).,association football | football | soccer,right,c
+triviaqa_qwen3-4b,wh_3141,"With a population of almost 930,000 inhabitants, what is the capital city of Nicaragua?",Managua.,managua | managua nicaragua | managua managua | capital of nicaragua | america managua | un locode nimga | leal villa de santiago de managua,right,c
+triviaqa_qwen3-4b,sfq_11368,How many symphonies did Jean Sibelius complete?,Jean Sibelius completed 6 symphonies.,seven | 7,wrong,I
+nq_open_qwen3-14b,nq_561,where was because i could not stop for death published,"The poem ""Because I Could Not Stop for Death"" was published in **1890** in **""Grass""**, a collection by Emily Dickinson",1890 | poems series 1,right,a
+popqa_qwen3-4b,popqa_2878177,Who was the director of The Return?,The director of *The Return* is Alejandro González Iñárritu.,andrey petrovich zvyagintsev | andrey zvyagintsev,wrong,I
+triviaqa_gemma-3-12b-it,qw_12439,The region of Catalonia is part of which country?,Spain.,el reino de españa | iso 3166 1 es | kingdom of spains | reino de espana | regne d espanha | espagna | mountains of spain | kingdom of spain,right,c
+nq_open_qwen3-14b,nq_2140,what is the most popular religion in sweden,Christianity,christianity | lutheran | lutheran church of sweden,right,c
+triviaqa_gemma-3-12b-it,qb_8036,Artiodactyla Suidae is the scientific name for which farm animal?,Pig.,🐽 | sus genus | piggeh | pigs | 🐷 | 🐖 | chazer | pig,right,c
+triviaqa_gemma-3-12b-it,tb_1083,Which Japanese island that has its capital at Sapporo is the traditional home of the Ainu people?,Hokkaido,mosir | jesso | jp 01 | hokkaidô prefecture | bilk drink | hokkaido japan | beihaidao | hokkaidō,right,c
+nq_open_qwen3-4b,nq_3140,three act puccini opera first performed in 1900,Tosca.,tosca,right,c
+nq_open_qwen3-4b,nq_2027,when was nepal declared a secular state in bs,Nepal declared a secular state in BS 2072 (2015).,january 15 2007,wrong,I
+popqa_qwen3-14b,popqa_2057039,"In what country is Łupiny, Masovian Voivodeship?",Poland,pl | pol | poland | polska | republic of poland,right,c
+popqa_qwen3-4b,popqa_1643574,What genre is Great Expectations?,Novel.,adapted for screen | based upon | cinematic adaptation | film adaptation,wrong,I
+nq_open_qwen3-4b,nq_162,who won the mens single ice skating 2018,Yuzuru Hanyu won the men's singles ice skating in 2018.,javier fernández | shoma uno | yuzuru hanyu,right,c
+triviaqa_qwen3-4b,sfq_21744,The opera Gloriana is by which English composer?,The opera *Gloriana* is by Benjamin Britten.,benjamin baron britten | benjamin britten | baron britten | benjamin britain | edward benjamin britten | baron britten of aldeburgh | britten | benjamin britten 1st baron britten,right,c
+nq_open_qwen3-14b,nq_1082,india participated olympic hockey for the first time,1928,1927 | 1928,right,c
+triviaqa_qwen3-4b,sfq_24528,What courtesy title is held by the heir to the Marquis of Bath?,The heir to the Marquis of Bath holds the title of Viscount Bath.,thynne baronets | baron thynne | marquis of bath | lord weymouth | marquess of bath | lord bath | viscount weymouth,wrong,I
+triviaqa_qwen3-4b,bb_7437,Who sang with Serge Gainsbourg on the hit Je t'aime?,Céline Dion.,jane birkin | janebirkin,wrong,I
+popqa_qwen3-4b,popqa_565838,In what city was Refet Bele born?,Refet Bele was born in Istanbul.,i stanbul | istanbul,right,c
+popqa_qwen3-4b,popqa_1582998,In what country is Panaitoliko?,Greece.,el | ellada | gr | gre | greece | greek | greek republic | hellas,right,c
+nq_open_qwen3-4b,nq_961,what is the average height of a chinese man,The average height of a Chinese man is approximately 175 cm.,5 ft 6 in,wrong,I
+triviaqa_qwen3-14b,qz_4002,"How were Dr Stantz, Dr Spengler and Dr Venkman better known in the 1980's?",They were better known as the Ghostbusters.,ivo shandor | keymaster | vinz clortho | ghost buster | zuul | who you gonna call 3f | evo shandor | dana barrett,right,c
+popqa_qwen3-4b,popqa_669340,Who was the director of The Pioneers?,The director of *The Pioneers* (1923) was D.W. Griffith.,john walter longford | raymond longford,wrong,I
+triviaqa_gemma-3-12b-it,sfq_11145,Which invention made Carlton C McGee famous in 1935?,Automatic shoe polisher.,parking metre | parking meter | master meter | un hee hee hee | parking meters | parking meter theft,wrong,I
+nq_open_qwen3-14b,nq_2718,what is the first line of an http request to the server,GET / HTTP/1.1,request line | status line,wrong,I
+triviaqa_gemma-3-12b-it,qb_8157,"In the US television show ‘The Sopranos’, which country permanently banned Janice Soprano from entering after putting her on an Unwanted Persons list?",France,canada s | canadá | ᑲᓇᑕ | čanada | canadaa | america s top hat | cnada | kenadian,wrong,I
+triviaqa_qwen3-4b,bb_969,In what European city was snooker player John Higgins stung by the News of the World newspaper relating to an alleged betting fix?,London.,київ | kiov | kiovia | kyiv kiev | kyiv | m kyiv | kyïv | kiiow,wrong,I
+triviaqa_gemma-3-12b-it,qw_707,"What British sitcom that aired from 1979 to 1981 in the UK, starred Penelope Keith and Peter Bowles?",The Good Life.,to manor born | richard devere | ttmb,wrong,I
+triviaqa_qwen3-14b,qz_1603,Which film features the characters Sally Albright and Harry Burns?,When Harry Met Sally,i ll have what she s having | when harry met sally… | sally albright | when harry met sally,right,c
+popqa_qwen3-4b,popqa_193571,Who was the producer of The Profession of Arms?,The producer of *The Profession of Arms* was John Wells.,ermanno olmi,wrong,I
+popqa_qwen3-14b,popqa_2557986,Who was the composer of Paris?,"The question ""Who was the composer of Paris?"" is somewhat ambiguous, as Paris is a city and not a musical composition. However, if referring to a famous",cole albert porter | cole porter,wrong,I
+triviaqa_qwen3-14b,qb_6594,The term ‘Heavy metal’ is said to have first appeared in which 1968 song?,"""heavy metal"" in 1968 song: ""Purple Haze"" by Jimi Hendrix.",born to be wild | born to be wild ozzy osbourne cover,wrong,I
+triviaqa_gemma-3-12b-it,dpql_486,"In the film ‘High Noon’, who has sworn to kill Will Kane (Gary Cooper)?",Frank Miller.,frank miller | frank miller disambiguation | frak miller | miller frank,right,c
+nq_open_qwen3-14b,nq_3140,three act puccini opera first performed in 1900,Tosca,tosca,right,c
+popqa_qwen3-4b,popqa_349317,What genre is Todd Terry?,Todd Terry is a hip-hop artist.,house | house music,wrong,I
+popqa_qwen3-14b,popqa_5711182,What genre is Seam?,Indie rock,independent rock | indie rock,right,c
+popqa_qwen3-14b,popqa_1852352,Who is the father of Kawab?,Kawab's father is not specified.,cheops | kheops | khnum khufu | khufu | khêops | salhuk | saurid | sofe,wrong,I
+nq_open_qwen3-14b,nq_3276,how long do former presidents get secret service protection,For life.,lifetime | lifetime protection,wrong,c
+nq_open_qwen3-4b,nq_2717,which episode does gideon die in criminal minds,"Gideon dies in ""The Devil's in the Details"" (S5E11).",nelson s sparrow,wrong,I
+popqa_qwen3-4b,popqa_5013568,Who is the author of Looking for Alibrandi?,Melina Marchetta.,carmelina marchetta | melina marchetta,right,c
+nq_open_qwen3-4b,nq_1184,where does the sweetness of fruit come from,Natural sugars in fruits.,fructose | fructose or fruit sugar,wrong,c
+triviaqa_qwen3-14b,bb_3277,Name the earliest (post-gamete) developmental stage of the human embryo?,Zygote,fertilized egg cell | oosperm | zygotes | zygote | biparental zygote | fertilized egg | zygotic | fertilised egg,right,c
+triviaqa_gemma-3-12b-it,qw_8999,Elvis Presley sang a few lines in German on which US hit song?,"""Hound Dog""",wooden heart,wrong,I
+popqa_qwen3-14b,popqa_1710487,Who was the screenwriter for The Graduate?,Charles Webb,buck henry | buck henry zuckerman | calder willingham | charles richard webb | charles webb | henry zuckerman,right,c
+triviaqa_gemma-3-12b-it,tb_992,A set of traditional laws called Kanun influence life in what mountainous European country?,Albania,albania | shqipëri | etymology of albania | shqipëria | shqiperia | health in albania | albenia | albanija,right,c
+popqa_qwen3-14b,popqa_1811247,In what country is Bouvet Island?,Norway,kingdom of norway | no | nor | noreg | norge | norvège | norway | norwegen,right,c
+nq_open_qwen3-14b,nq_3375,what time can you legally buy alcohol in michigan,7:00 AM.,7 m,wrong,c
+popqa_qwen3-4b,popqa_2357044,Who is the author of The Reader?,The author of *The Reader* is Bernhard Schlink.,bernhard schlink,right,c
+nq_open_qwen3-14b,nq_226,ganglion axons forming the optic nerve run to the,brain.,lateral geniculate nucleus | optic chiasma | photoreceptor cells | pretectal nucleus | suprachiasmatic nucleus,wrong,I
+popqa_qwen3-14b,popqa_5695286,What is Sardar Muhammad Yousaf Zaman's occupation?,Politician,pol | polit | political figure | political leader | politician,right,c
+nq_open_qwen3-14b,nq_3070,who are the stars in dancing with the stars,Celebrities and professional dancers.,adam rippon | arike ogunbowale | chris mazdzer | jamie anderson | jennie finch daigle | johnny damon | josh norman | kareem abdul jabbar,wrong,a
+triviaqa_qwen3-4b,qb_3183,"In humans, Duane Syndrome affects which part of the body?",Eyes.,compound eyes | oculars | facet eyes | cyber eye | ommateum | peeper organ | eye balls | compound eye,right,c
+triviaqa_qwen3-4b,dpql_224,Which Michael Frayn play features a ‘play within a play’ entitled Nothing On?,Nothing On.,noises off | noise s off,wrong,I
+triviaqa_qwen3-14b,sfq_3274,In law what term translates from the Latin meaning 'elsewhere'?,Aliunde.,alaby | alibi network | alibi | alibi law | alibi agency,wrong,c
